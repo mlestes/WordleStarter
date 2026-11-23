@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wordle Starter Generator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <button id="open-dict-btn" class="icon-pill-btn" type="button" aria-label="Open starter dictionary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <span>Dictionary</span>
+        <span id="dict-count-badge" class="count-badge">0</span>
+      </button>
+
+      <h1 class="brand-title">Wordle Starter</h1>
+
+      <button id="theme-toggle-btn" class="icon-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="theme-icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Category Filter -->
+    <nav class="category-bar" aria-label="Starter word category">
+      <button class="filter-pill active" type="button" data-category="all">All</button>
+      <button class="filter-pill" type="button" data-category="optimal">Top Optimal</button>
+      <button class="filter-pill" type="button" data-category="vowel-heavy">Vowel-Heavy</button>
+      <button class="filter-pill" type="button" data-category="rare">Uncommon Letters</button>
+    </nav>
+
+    <!-- Primary Featured Wordle Row -->
+    <section class="stage" aria-live="polite">
+      <div id="wordle-row" class="wordle-row" role="group" aria-label="Random Wordle starter word">
+        <div class="tile" data-index="0"></div>
+        <div class="tile" data-index="1"></div>
+        <div class="tile" data-index="2"></div>
+        <div class="tile" data-index="3"></div>
+        <div class="tile" data-index="4"></div>
+      </div>
+
+      <div id="result-meta" class="result-meta">
+        <span class="placeholder-hint">Press the button below to draw a random Wordle starter</span>
+      </div>
+
+      <div class="actions">
+        <button id="random-btn" class="btn-primary" type="button">
+          Get Random Starter
+        </button>
+        <div class="secondary-actions">
+          <button id="reroll-colors-btn" class="btn-secondary" type="button" disabled>
+            Re-roll Colors
+          </button>
+          <button id="copy-btn" class="btn-secondary" type="button" disabled>
+            Copy Grid
+          </button>
+        </div>
+      </div>
+
+      <p class="shortcut-hint">Tip: Press <kbd>Space</kbd> for a new starter</p>
+    </section>
+
+    <!-- Tile Color Legend -->
+    <section class="legend" aria-label="Tile color legend">
+      <div class="legend-item">
+        <span class="swatch swatch-correct" aria-hidden="true"></span>
+        <span>Green (Correct)</span>
+      </div>
+      <div class="legend-item">
+        <span class="swatch swatch-present" aria-hidden="true"></span>
+        <span>Yellow (Present)</span>
+      </div>
+      <div class="legend-item">
+        <span class="swatch swatch-absent" aria-hidden="true"></span>
+        <span>Grey (Absent)</span>
+      </div>
+    </section>
+
+    <!-- Recent Rolls History -->
+    <section id="history-section" class="history-section hidden" aria-label="Recent random starters">
+      <div class="history-header">
+        <h2>Recent Starters</h2>
+        <button id="clear-history-btn" class="text-btn" type="button">Clear</button>
+      </div>
+      <div id="history-board" class="history-board"></div>
+    </section>
+  </main>
+
+  <!-- Dictionary Modal -->
+  <div id="dict-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="dict-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2 id="dict-modal-title">Starter Dictionary</h2>
+          <p id="dict-modal-subtitle" class="modal-subtitle"></p>
+        </div>
+        <button id="close-dict-btn" class="icon-btn" type="button" aria-label="Close dictionary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-search-row">
+        <input
+          id="dict-search-input"
+          type="search"
+          placeholder="Search 14,855 valid Wordle guesses (e.g. Q, Z, JAZZY)..."
+          aria-label="Search valid Wordle starter words"
+        />
+      </div>
+      <p id="dict-match-status" class="dict-match-status" role="status"></p>
+
+      <div id="dict-word-grid" class="dict-word-grid"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="dictionary.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
